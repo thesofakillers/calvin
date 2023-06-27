@@ -8,6 +8,9 @@
 
 [Oier Mees](https://www.oiermees.com/), [Lukas Hermann](https://lukashermann.github.io/), [Erick Rosete](https://www.erickrosete.com/), [Wolfram Burgard](http://www2.informatik.uni-freiburg.de/~burgard)
 
+#### CALVIN won the 2022 IEEE Robotics and Automation Letters (RA-L) Best Paper Award!
+
+
  We present **CALVIN** (**C**omposing **A**ctions from **L**anguage and **Vi**sio**n**), an open-source simulated benchmark to learn long-horizon language-conditioned tasks.
 Our aim is to make it possible to develop agents that can solve many robotic manipulation tasks over a long horizon, from onboard sensors, and specified only via human language. CALVIN tasks are more complex in terms of sequence length, action space, and language than existing vision-and-language task datasets and supports flexible specification of sensor
 suites.
@@ -167,7 +170,7 @@ Open-source models that outperform the MCIL baselines from CALVIN:
 <br>
 Oier Mees, Jessica Borja-Diaz, Wolfram Burgard
 <br>
-<a href="https://arxiv.org/pdf/2210.01911.pdf"> Paper</a>, <a href="http://hulc2.cs.uni-freiburg.de/"> Code </a>
+<a href="https://arxiv.org/pdf/2210.01911.pdf"> Paper</a>, <a href="https://github.com/mees/hulc2"> Code </a>
 
 <b> Language Control Diffusion: Efficiently Scaling through Space, Time, and Tasks</b>
 <br>
