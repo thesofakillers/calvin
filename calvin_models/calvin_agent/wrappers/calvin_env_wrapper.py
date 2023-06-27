@@ -8,23 +8,24 @@ import numpy as np
 import torch
 
 from calvin_env.envs.play_table_env import get_env
-from calvin_env.utils.utils import EglDeviceNotFoundError, get_egl_device_id
+from calvin_env.utils.utils import set_egl_device
 
 logger = logging.getLogger(__name__)
 
 
 class CalvinEnvWrapper(gym.Wrapper):
-    def __init__(self, dataset_loader, urdf_data_dir, device, show_gui=False, use_egl=True, **kwargs):
+    def __init__(self, dataset_loader, urdf_data_dir, device, egl_dir_path, show_gui=False, use_egl=True, **kwargs):
         """
         Args:
             dataset_loader: calvin torch dataset
             urdf_data_dir: path to urdf data
             device: torch device to run on
+            egl_dir_path: path to directory 'egl_check' with egl libs
             show_gui: whether to show the gui
             use_egl: whether to use egl rendering
             **kwargs: additional arguments
         """
-        self.set_egl_device(device)
+        set_egl_device(device, egl_dir_path)
         env = get_env(
             dataset_loader.abs_datasets_dir,
             urdf_data_dir,
@@ -40,25 +41,6 @@ class CalvinEnvWrapper(gym.Wrapper):
         self.device = device
         self.relative_actions = "rel_actions" in self.observation_space_keys["actions"]
         logger.info(f"Initialized PlayTableEnv for device {self.device}")
-
-    @staticmethod
-    def set_egl_device(device):
-        if device.type == "cpu":
-            pass
-        if "EGL_VISIBLE_DEVICES" in os.environ:
-            logger.warning("Environment variable EGL_VISIBLE_DEVICES is already set. Is this intended?")
-        cuda_id = device.index if device.type == "cuda" else 0
-        try:
-            egl_id = get_egl_device_id(cuda_id)
-        except EglDeviceNotFoundError:
-            logger.warning(
-                "Couldn't find correct EGL device. Setting EGL_VISIBLE_DEVICE=0. "
-                "When using DDP with many GPUs this can lead to OOM errors. "
-                "Did you install PyBullet correctly? Please refer to calvin env README"
-            )
-            egl_id = 0
-        os.environ["EGL_VISIBLE_DEVICES"] = str(egl_id)
-        logger.info(f"EGL_DEVICE_ID {egl_id} <==> CUDA_DEVICE_ID {cuda_id}")
 
     def transform_observation(self, obs: Dict[str, Any]) -> Dict[str, Union[torch.Tensor, Dict[str, torch.Tensor]]]:
         state_obs = process_state(obs, self.observation_space_keys, self.transforms, self.proprio_state)
