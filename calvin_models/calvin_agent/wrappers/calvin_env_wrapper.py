@@ -38,7 +38,8 @@ class CalvinEnvWrapper(gym.Wrapper):
             use_egl: whether to use egl rendering
             **kwargs: additional arguments
         """
-        set_egl_device(device, egl_dir_path)
+        if use_egl:
+            set_egl_device(device, egl_dir_path)
         env = get_env(
             dataset_loader.abs_datasets_dir,
             urdf_data_dir,
