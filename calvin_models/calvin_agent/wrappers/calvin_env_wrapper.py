@@ -14,10 +14,24 @@ logger = logging.getLogger(__name__)
 
 
 class CalvinEnvWrapper(gym.Wrapper):
-    def __init__(self, dataset_loader, device, show_gui=False, **kwargs):
+    def __init__(self, dataset_loader, urdf_data_dir, device, show_gui=False, use_egl=True, **kwargs):
+        """
+        Args:
+            dataset_loader: calvin torch dataset
+            urdf_data_dir: path to urdf data
+            device: torch device to run on
+            show_gui: whether to show the gui
+            use_egl: whether to use egl rendering
+            **kwargs: additional arguments
+        """
         self.set_egl_device(device)
         env = get_env(
-            dataset_loader.abs_datasets_dir, show_gui=show_gui, obs_space=dataset_loader.observation_space, **kwargs
+            dataset_loader.abs_datasets_dir,
+            urdf_data_dir,
+            show_gui=show_gui,
+            use_egl=use_egl,
+            obs_space=dataset_loader.observation_space,
+            **kwargs,
         )
         super(CalvinEnvWrapper, self).__init__(env)
         self.observation_space_keys = dataset_loader.observation_space
@@ -29,6 +43,8 @@ class CalvinEnvWrapper(gym.Wrapper):
 
     @staticmethod
     def set_egl_device(device):
+        if device.type == "cpu":
+            pass
         if "EGL_VISIBLE_DEVICES" in os.environ:
             logger.warning("Environment variable EGL_VISIBLE_DEVICES is already set. Is this intended?")
         cuda_id = device.index if device.type == "cuda" else 0
